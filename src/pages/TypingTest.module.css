@@ -60,24 +60,42 @@
   }
 }
 
+.restartButton {
+  margin-top: 24px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  border: 1px solid var(--btn-border);
+  border-radius: 6px;
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.restartButton:hover {
+  background: var(--btn-hover-bg);
+}
+
 .pending {
   color: var(--text-muted);
 }
 
 .correct {
-  color: #16a34a;
+  color: #40a02b; /* Catppuccin Latte Green */
 }
 
 .wrong {
-  color: #dc2626;
+  color: #d20f39; /* Catppuccin Latte Red */
 }
 
 @media (prefers-color-scheme: dark) {
   .correct {
-    color: #4ade80;
+    color: #a6e3a1; /* Catppuccin Mocha Green */
   }
 
   .wrong {
-    color: #f87171;
+    color: #f38ba8; /* Catppuccin Mocha Red */
   }
 }

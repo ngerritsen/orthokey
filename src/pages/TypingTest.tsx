@@ -3,7 +3,6 @@ import { useTypingTest } from '../hooks/useTypingTest'
 import { TEXTS } from '../config/texts'
 import { PageHeader } from '../components/PageHeader'
 import styles from './TypingTest.module.css'
-import appStyles from '../App.module.css'
 
 const TEXT = TEXTS[0]
 
@@ -31,14 +30,7 @@ export function TypingTest() {
 
   return (
     <div className={styles.container}>
-      <PageHeader
-        title="OrthoKey"
-        actions={
-          <button className={appStyles.button} onClick={reset}>
-            Restart
-          </button>
-        }
-      />
+      <PageHeader title="OrthoKey" />
       <p className={styles.hint}>Tab to restart · Backspace to go back</p>
       <div className={styles.text} aria-label="typing test text">
         {TEXT.split('').map((char, i) => (
@@ -57,6 +49,9 @@ export function TypingTest() {
         ))}
         {cursor === TEXT.length && <span className={styles.cursorEnd} />}
       </div>
+      <button className={styles.restartButton} onClick={reset}>
+        Restart
+      </button>
     </div>
   )
 }
