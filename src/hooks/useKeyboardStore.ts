@@ -37,7 +37,7 @@ function findNextTarget(keys: KeyMap): CurrentTarget | null {
   for (const layer of LAYERS) {
     for (let y = 0; y < ROWS; y++) {
       for (let x = 0; x < COLS; x++) {
-        if (isPromptable(x, y) && !keys[storeKey(x, y, layer)]) {
+        if (isPromptable(x, y) && !(storeKey(x, y, layer) in keys)) {
           return { layer, x, y }
         }
       }
@@ -85,7 +85,7 @@ export function useKeyboardStore() {
       for (const layer of LAYERS) {
         for (let y = 0; y < ROWS; y++) {
           for (let x = 0; x < COLS; x++) {
-            if (isPromptable(x, y) && prev[storeKey(x, y, layer)]) {
+            if (isPromptable(x, y) && storeKey(x, y, layer) in prev) {
               lastLayer = layer
               lastX = x
               lastY = y

@@ -96,4 +96,5 @@
   box-shadow: 0 3px 0 var(--key-highlighted-shadow);
   transform: translateY(-1px);
   animation: keyPulse 1.2s ease-in-out infinite;
+  cursor: pointer;
 }

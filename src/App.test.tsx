@@ -284,3 +284,131 @@ describe('start/pause/continue', () => {
     expect(screen.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 })
+
+describe('custom label modal', () => {
+  it('opens modal when clicking the highlighted key', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.click(getCell('main', 0, 0))
+    expect(screen.getByText('Enter custom label')).toBeInTheDocument()
+  })
+
+  it('does not open modal when clicking a non-highlighted key', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.click(getCell('main', 1, 0))
+    expect(screen.queryByText('Enter custom label')).not.toBeInTheDocument()
+  })
+
+  it('does not open modal when not active', () => {
+    render(<App />)
+    fireEvent.click(getCell('main', 0, 0))
+    expect(screen.queryByText('Enter custom label')).not.toBeInTheDocument()
+  })
+
+  it('records the custom label on submit and closes modal', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.click(getCell('main', 0, 0))
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Fn' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
+    expect(getCell('main', 0, 0)).toHaveTextContent('Fn')
+    expect(screen.queryByText('Enter custom label')).not.toBeInTheDocument()
+  })
+
+  it('records the label on Enter key', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.click(getCell('main', 0, 0))
+    const input = screen.getByRole('textbox')
+    fireEvent.change(input, { target: { value: 'BrtUp' } })
+    fireEvent.keyDown(input, { key: 'Enter' })
+    expect(getCell('main', 0, 0)).toHaveTextContent('BrtUp')
+  })
+
+  it('cancels on Escape key without recording', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.click(getCell('main', 0, 0))
+    const input = screen.getByRole('textbox')
+    fireEvent.change(input, { target: { value: 'Fn' } })
+    fireEvent.keyDown(input, { key: 'Escape' })
+    expect(screen.queryByText('Enter custom label')).not.toBeInTheDocument()
+    expect(getCell('main', 0, 0)).toHaveTextContent('')
+  })
+
+  it('cancels on Cancel button without recording', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.click(getCell('main', 0, 0))
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Fn' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(screen.queryByText('Enter custom label')).not.toBeInTheDocument()
+    expect(getCell('main', 0, 0)).toHaveTextContent('')
+  })
+
+  it('records empty string when submitted with no input', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.click(getCell('main', 0, 0))
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
+    // Empty string is stored — key advances to next position
+    expect(screen.getByText(/main layer \(1,0\)/i)).toBeInTheDocument()
+  })
+
+  it('does not capture key presses while modal is open', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.click(getCell('main', 0, 0))
+    pressKey('KeyA')
+    // Modal still open, key not recorded
+    expect(screen.getByText('Enter custom label')).toBeInTheDocument()
+    expect(getCell('main', 0, 0)).toHaveTextContent('')
+  })
+})
+
+describe('key repeat and modifier handling', () => {
+  it('ignores key repeat events', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.keyDown(window, { code: 'KeyA', repeat: true })
+    expect(getCell('main', 0, 0)).toHaveTextContent('')
+    expect(screen.getByText(/main layer \(0,0\)/i)).toBeInTheDocument()
+  })
+
+  it('registers a modifier key on keyup', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.keyDown(window, { code: 'AltLeft' })
+    expect(getCell('main', 0, 0)).toHaveTextContent('')
+    fireEvent.keyUp(window, { code: 'AltLeft' })
+    expect(getCell('main', 0, 0)).toHaveTextContent('AltLeft')
+  })
+
+  it('does not register a modifier when window blurs before keyup (e.g. Alt+Tab)', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.keyDown(window, { code: 'AltLeft' })
+    fireEvent(window, new FocusEvent('blur'))
+    expect(getCell('main', 0, 0)).toHaveTextContent('')
+    expect(screen.getByText(/main layer \(0,0\)/i)).toBeInTheDocument()
+  })
+
+  it('does not register a modifier when a non-modifier key is pressed alongside it', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.keyDown(window, { code: 'ShiftLeft' })
+    fireEvent.keyDown(window, { code: 'KeyA' })
+    // ShiftLeft not registered, KeyA registered
+    expect(getCell('main', 0, 0)).toHaveTextContent('A')
+    expect(screen.getByText(/main layer \(1,0\)/i)).toBeInTheDocument()
+  })
+
+  it('registers Shift when pressed and released alone', () => {
+    render(<App />)
+    clickStart()
+    fireEvent.keyDown(window, { code: 'ShiftLeft' })
+    fireEvent.keyUp(window, { code: 'ShiftLeft' })
+    expect(getCell('main', 0, 0)).toHaveTextContent('ShiftLeft')
+  })
+})

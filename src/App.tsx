@@ -3,13 +3,20 @@ import { LAYERS } from './config/keyboard'
 import { useKeyboardStore } from './hooks/useKeyboardStore'
 import { useKeyListener } from './hooks/useKeyListener'
 import { KeyboardGrid } from './components/KeyboardGrid'
+import { CustomLabelModal } from './components/CustomLabelModal'
 import styles from './App.module.css'
 
 export default function App() {
   const { keys, currentTarget, recordKey, undo, reset } = useKeyboardStore()
   const [active, setActive] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
 
-  useKeyListener(recordKey, active && currentTarget !== null)
+  useKeyListener(recordKey, active && currentTarget !== null && !modalOpen)
+
+  function handleCustomLabel(label: string) {
+    setModalOpen(false)
+    recordKey(label)
+  }
 
   const isDone = currentTarget === null
   const hasProgress = Object.keys(keys).length > 0
@@ -57,8 +64,13 @@ export default function App() {
           currentTarget={currentTarget}
           active={active}
           isActive={!currentTarget || currentTarget.layer === layer}
+          onCurrentKeyClick={() => setModalOpen(true)}
         />
       ))}
+
+      {modalOpen && (
+        <CustomLabelModal onSubmit={handleCustomLabel} onCancel={() => setModalOpen(false)} />
+      )}
     </div>
   )
 }
