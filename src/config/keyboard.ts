@@ -46,7 +46,51 @@ export function isPromptable(x: number, y: number): boolean {
   return !isSkipped(x, y) && !isMirrorTarget(x, y)
 }
 
+const CODE_SYMBOLS: Record<string, string> = {
+  Comma: ',',
+  Period: '.',
+  Semicolon: ';',
+  Quote: "'",
+  BracketLeft: '[',
+  BracketRight: ']',
+  Backslash: '\\',
+  Slash: '/',
+  Minus: '-',
+  Equal: '=',
+  Backquote: '`',
+  ShiftLeft: 'Shift',
+  ShiftRight: 'Shift',
+  AltLeft: 'Alt',
+  AltRight: 'Alt',
+  ControlLeft: 'Ctrl',
+  ControlRight: 'Ctrl',
+  MetaLeft: 'Meta',
+  MetaRight: 'Meta',
+  Backspace: '⌫',
+  Enter: '↵',
+  Tab: '⇥',
+  Escape: 'Esc',
+  Delete: 'Del',
+  CapsLock: 'Caps',
+  Space: 'Spc',
+  ArrowUp: '↑',
+  ArrowDown: '↓',
+  ArrowLeft: '←',
+  ArrowRight: '→',
+  PageUp: 'PgUp',
+  PageDown: 'PgDn',
+  Home: 'Home',
+  End: 'End',
+  Insert: 'Ins',
+  PrintScreen: 'PrtSc',
+  ScrollLock: 'ScrlLk',
+  Pause: 'Pause',
+  NumLock: 'NumLk',
+  ContextMenu: 'Menu',
+}
+
 export function formatCode(code: string): string {
+  if (code in CODE_SYMBOLS) return CODE_SYMBOLS[code]
   if (code.startsWith('Key')) return code.slice(3)
   if (code.startsWith('Digit')) return code.slice(5)
   return code
