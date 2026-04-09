@@ -11,7 +11,7 @@
 .modal {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 24px;
   width: 320px;
   display: flex;
@@ -38,7 +38,7 @@
   font-size: 14px;
   padding: 8px 12px;
   border: 1px solid var(--border-strong);
-  border-radius: 6px;
+  border-radius: 10px;
   background: var(--bg-primary);
   color: var(--text-primary);
   outline: none;
@@ -60,9 +60,9 @@
   font-size: 13px;
   font-weight: 600;
   font-family: inherit;
-  border-radius: 6px;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
-  border: 1px solid var(--btn-border);
   background: var(--btn-bg);
   color: var(--btn-color);
   transition: background 0.1s;
@@ -74,7 +74,6 @@
 
 .buttonSubmit {
   background: var(--btn-start-bg);
-  border-color: var(--btn-start-border);
   color: var(--btn-start-color);
 }
 
@@ -84,7 +83,6 @@
 
 .buttonCancel {
   background: var(--btn-bg);
-  border-color: var(--btn-border);
   color: var(--btn-color);
 }
 

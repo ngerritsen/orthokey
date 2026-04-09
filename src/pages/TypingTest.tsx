@@ -30,7 +30,7 @@ export function TypingTest() {
 
   return (
     <div className={styles.container}>
-      <PageHeader title="OrthoKey" />
+      <PageHeader title="Orthokey" />
       <p className={styles.hint}>Tab to restart · Backspace to go back</p>
       <div className={styles.text} aria-label="typing test text">
         {TEXT.split('').map((char, i) => (

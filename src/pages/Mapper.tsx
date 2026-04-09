@@ -44,7 +44,7 @@ export function Mapper() {
   return (
     <div className={styles.container}>
       <PageHeader
-        title="OrthoKey"
+        title="Orthokey"
         subtitle={subtitle}
         actions={
           <>

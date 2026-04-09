@@ -35,8 +35,8 @@
   font-size: 13px;
   font-weight: 600;
   font-family: inherit;
-  border: 1px solid var(--btn-border);
-  border-radius: 6px;
+  border: none;
+  border-radius: 10px;
   background: var(--btn-bg);
   color: var(--btn-color);
   cursor: pointer;
@@ -54,7 +54,6 @@
 
 .buttonStart {
   background: var(--btn-start-bg);
-  border-color: var(--btn-start-border);
   color: var(--btn-start-color);
 }
 
@@ -64,7 +63,6 @@
 
 .buttonPause {
   background: var(--btn-pause-bg);
-  border-color: var(--btn-pause-border);
   color: var(--btn-pause-color);
 }
 
@@ -74,7 +72,6 @@
 
 .buttonReset {
   background: var(--btn-reset-bg);
-  border-color: var(--btn-reset-border);
   color: var(--btn-reset-color);
 }
 
