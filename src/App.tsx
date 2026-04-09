@@ -6,7 +6,7 @@ import { KeyboardGrid } from './components/KeyboardGrid'
 import styles from './App.module.css'
 
 export default function App() {
-  const { keys, currentTarget, recordKey, reset } = useKeyboardStore()
+  const { keys, currentTarget, recordKey, undo, reset } = useKeyboardStore()
   const [active, setActive] = useState(false)
 
   useKeyListener(recordKey, active && currentTarget !== null)
@@ -14,6 +14,7 @@ export default function App() {
   const isDone = currentTarget === null
   const hasProgress = Object.keys(keys).length > 0
   const startLabel = active ? 'Pause' : hasProgress ? 'Continue' : 'Start'
+  const canUndo = active && hasProgress
 
   function handleReset() {
     setActive(false)
@@ -38,6 +39,9 @@ export default function App() {
             disabled={isDone}
           >
             {startLabel}
+          </button>
+          <button className={styles.button} onClick={undo} disabled={!canUndo}>
+            Back
           </button>
           <button className={`${styles.button} ${styles.buttonReset}`} onClick={handleReset}>
             Reset

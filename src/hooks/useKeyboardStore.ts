@@ -75,10 +75,48 @@ export function useKeyboardStore() {
     [currentTarget],
   )
 
+  const undo = useCallback(() => {
+    setKeys((prev) => {
+      // Find the last recorded promptable key in scan order
+      let lastLayer: Layer | null = null
+      let lastX = -1
+      let lastY = -1
+
+      for (const layer of LAYERS) {
+        for (let y = 0; y < ROWS; y++) {
+          for (let x = 0; x < COLS; x++) {
+            if (isPromptable(x, y) && prev[storeKey(x, y, layer)]) {
+              lastLayer = layer
+              lastX = x
+              lastY = y
+            }
+          }
+        }
+      }
+
+      if (lastLayer === null) return prev
+
+      const next = { ...prev }
+      delete next[storeKey(lastX, lastY, lastLayer)]
+
+      // Remove any mirrors that were auto-filled from this position
+      const sourcePk = posKey(lastX, lastY)
+      for (const [mirrorPk, refPk] of Object.entries(MIRROR_TARGETS)) {
+        if (refPk === sourcePk) {
+          const [mx, my] = mirrorPk.split(',').map(Number)
+          delete next[storeKey(mx, my, lastLayer)]
+        }
+      }
+
+      saveToStorage(next)
+      return next
+    })
+  }, [])
+
   const reset = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY)
     setKeys({})
   }, [])
 
-  return { keys, currentTarget, recordKey, reset }
+  return { keys, currentTarget, recordKey, undo, reset }
 }
