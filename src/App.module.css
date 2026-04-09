@@ -51,3 +51,33 @@
   opacity: 0.4;
   cursor: default;
 }
+
+.buttonStart {
+  background: var(--btn-start-bg);
+  border-color: var(--btn-start-border);
+  color: var(--btn-start-color);
+}
+
+.buttonStart:hover:not(:disabled) {
+  background: var(--btn-start-hover-bg);
+}
+
+.buttonPause {
+  background: var(--btn-pause-bg);
+  border-color: var(--btn-pause-border);
+  color: var(--btn-pause-color);
+}
+
+.buttonPause:hover:not(:disabled) {
+  background: var(--btn-pause-hover-bg);
+}
+
+.buttonReset {
+  background: var(--btn-reset-bg);
+  border-color: var(--btn-reset-border);
+  color: var(--btn-reset-color);
+}
+
+.buttonReset:hover:not(:disabled) {
+  background: var(--btn-reset-hover-bg);
+}

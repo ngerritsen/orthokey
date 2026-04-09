@@ -39,11 +39,29 @@
   --status-active: #d97706;
   --status-complete: #16a34a;
 
-  /* Buttons */
+  /* Buttons — default (neutral) */
   --btn-bg: #ffffff;
   --btn-border: #e2ddd8;
   --btn-color: #44403c;
   --btn-hover-bg: #f5f2ee;
+
+  /* Button — start/continue (warm green) */
+  --btn-start-bg: #16a34a;
+  --btn-start-border: #15803d;
+  --btn-start-color: #ffffff;
+  --btn-start-hover-bg: #15803d;
+
+  /* Button — pause (amber) */
+  --btn-pause-bg: #d97706;
+  --btn-pause-border: #b45309;
+  --btn-pause-color: #ffffff;
+  --btn-pause-hover-bg: #b45309;
+
+  /* Button — reset (terracotta) */
+  --btn-reset-bg: #ffffff;
+  --btn-reset-border: #c2410c;
+  --btn-reset-color: #c2410c;
+  --btn-reset-hover-bg: #fff7ed;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -86,6 +104,21 @@
     --btn-border: #3c3733;
     --btn-color: #d6d3d0;
     --btn-hover-bg: #3c3733;
+
+    --btn-start-bg: #16a34a;
+    --btn-start-border: #15803d;
+    --btn-start-color: #ffffff;
+    --btn-start-hover-bg: #15803d;
+
+    --btn-pause-bg: #d97706;
+    --btn-pause-border: #b45309;
+    --btn-pause-color: #ffffff;
+    --btn-pause-hover-bg: #b45309;
+
+    --btn-reset-bg: #292524;
+    --btn-reset-border: #c2410c;
+    --btn-reset-color: #fb923c;
+    --btn-reset-hover-bg: #3c3733;
   }
 }
 

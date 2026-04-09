@@ -49,7 +49,7 @@ export function KeyboardGrid({ layer, keys, currentTarget, active, isActive }: P
           <div key={y} className={styles.row}>
             {Array.from({ length: COLS }, (_, x) => {
               const isHighlighted =
-                isCurrentLayer && currentTarget?.x === x && currentTarget?.y === y
+                active && isCurrentLayer && currentTarget?.x === x && currentTarget?.y === y
               const skipped = isSkipped(x, y)
               const mirror = isMirrorTarget(x, y)
               const recorded = keys[storeKey(x, y, layer)]

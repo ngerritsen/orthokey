@@ -84,10 +84,16 @@
   box-shadow: 0 3px 0 var(--key-mapped-shadow);
 }
 
+@keyframes keyPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
 .keyHighlighted {
   background: var(--key-highlighted-bg);
   border-color: var(--key-highlighted-border);
   color: var(--key-highlighted-color);
   box-shadow: 0 3px 0 var(--key-highlighted-shadow);
   transform: translateY(-1px);
+  animation: keyPulse 1.2s ease-in-out infinite;
 }

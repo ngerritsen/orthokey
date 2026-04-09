@@ -33,13 +33,13 @@ export default function App() {
         </div>
         <div className={styles.actions}>
           <button
-            className={styles.button}
+            className={`${styles.button} ${active ? styles.buttonPause : styles.buttonStart}`}
             onClick={() => setActive((a) => !a)}
             disabled={isDone}
           >
             {startLabel}
           </button>
-          <button className={styles.button} onClick={handleReset}>
+          <button className={`${styles.button} ${styles.buttonReset}`} onClick={handleReset}>
             Reset
           </button>
         </div>
