@@ -1,121 +1,83 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { LAYERS } from './config/keyboard'
+import { useKeyboardStore } from './hooks/useKeyboardStore'
+import { useKeyListener } from './hooks/useKeyListener'
+import { KeyboardGrid } from './components/KeyboardGrid'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const { keys, currentTarget, recordKey, reset } = useKeyboardStore()
+  const [active, setActive] = useState(false)
+
+  useKeyListener(recordKey, active && currentTarget !== null)
+
+  const isDone = currentTarget === null
+  const hasProgress = Object.keys(keys).length > 0
+  const startLabel = active ? 'Pause' : hasProgress ? 'Continue' : 'Start'
+
+  function handleReset() {
+    setActive(false)
+    reset()
+  }
+
+  const buttonStyle = {
+    padding: '6px 14px',
+    fontSize: 13,
+    fontWeight: 600,
+    border: '1px solid #e5e7eb',
+    borderRadius: 6,
+    background: '#fff',
+    cursor: 'pointer',
+    color: '#374151',
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+    <div
+      style={{
+        fontFamily: 'system-ui, sans-serif',
+        maxWidth: 900,
+        margin: '0 auto',
+        padding: '24px 16px',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          marginBottom: 28,
+        }}
+      >
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
+          <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 800 }}>OrthoKey</h1>
+          <p style={{ margin: 0, fontSize: 13, color: '#6b7280' }}>
+            {isDone
+              ? 'All layers mapped.'
+              : `Press the highlighted key — ${currentTarget.layer} layer (${currentTarget.x},${currentTarget.y})`}
           </p>
         </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            onClick={() => setActive((a) => !a)}
+            disabled={isDone}
+            style={buttonStyle}
+          >
+            {startLabel}
+          </button>
+          <button onClick={handleReset} style={buttonStyle}>
+            Reset
+          </button>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      {LAYERS.map((layer) => (
+        <KeyboardGrid
+          key={layer}
+          layer={layer}
+          keys={keys}
+          currentTarget={currentTarget}
+          isActive={!currentTarget || currentTarget.layer === layer}
+        />
+      ))}
+    </div>
   )
 }
-
-export default App
