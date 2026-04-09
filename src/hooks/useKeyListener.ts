@@ -28,7 +28,8 @@ export function useKeyListener(onKey: (code: string) => void, enabled: boolean) 
         pendingModifier.current = e.code
       } else {
         pendingModifier.current = null
-        onKey(e.code)
+        const key = /^[^\sa-zA-Z]$/.test(e.key) ? e.key : e.code
+        onKey(key)
       }
     }
 
