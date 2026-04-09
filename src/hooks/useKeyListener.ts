@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 const MODIFIER_CODES = new Set([
   'AltLeft',
@@ -13,6 +13,10 @@ const MODIFIER_CODES = new Set([
 
 export function useKeyListener(onKey: (code: string) => void, enabled: boolean) {
   const pendingModifier = useRef<string | null>(null)
+
+  const cancelPending = useCallback(() => {
+    pendingModifier.current = null
+  }, [])
 
   useEffect(() => {
     if (!enabled) {
@@ -54,4 +58,6 @@ export function useKeyListener(onKey: (code: string) => void, enabled: boolean) 
       window.removeEventListener('blur', handleBlur)
     }
   }, [onKey, enabled])
+
+  return { cancelPending }
 }

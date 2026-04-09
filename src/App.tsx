@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LAYERS } from './config/keyboard'
+import { LAYERS, type Layer } from './config/keyboard'
 import { useKeyboardStore } from './hooks/useKeyboardStore'
 import { useKeyListener } from './hooks/useKeyListener'
 import { KeyboardGrid } from './components/KeyboardGrid'
@@ -7,15 +7,23 @@ import { CustomLabelModal } from './components/CustomLabelModal'
 import styles from './App.module.css'
 
 export default function App() {
-  const { keys, currentTarget, recordKey, undo, reset } = useKeyboardStore()
+  const { keys, currentTarget, recordKey, jumpTo, undo, reset } = useKeyboardStore()
   const [active, setActive] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
 
-  useKeyListener(recordKey, active && currentTarget !== null && !modalOpen)
+  const { cancelPending } = useKeyListener(recordKey, active && currentTarget !== null && !modalOpen)
 
   function handleCustomLabel(label: string) {
     setModalOpen(false)
     recordKey(label)
+  }
+
+  function handleKeyClick(x: number, y: number, layer: Layer, shiftKey: boolean) {
+    jumpTo(x, y, layer)
+    if (shiftKey) {
+      cancelPending()
+      setModalOpen(true)
+    }
   }
 
   const isDone = currentTarget === null
@@ -64,7 +72,7 @@ export default function App() {
           currentTarget={currentTarget}
           active={active}
           isActive={!currentTarget || currentTarget.layer === layer}
-          onCurrentKeyClick={() => setModalOpen(true)}
+          onKeyClick={handleKeyClick}
         />
       ))}
 

@@ -10,6 +10,7 @@ export function CustomLabelModal({ onSubmit, onCancel }: Props) {
   const [value, setValue] = useState('')
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    e.stopPropagation()
     if (e.key === 'Enter') {
       onSubmit(value)
     } else if (e.key === 'Escape') {

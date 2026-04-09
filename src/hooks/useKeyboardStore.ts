@@ -48,14 +48,20 @@ function findNextTarget(keys: KeyMap): CurrentTarget | null {
 
 export function useKeyboardStore() {
   const [keys, setKeys] = useState<KeyMap>(loadFromStorage)
+  const [forcedTarget, setForcedTarget] = useState<CurrentTarget | null>(null)
 
-  const currentTarget = findNextTarget(keys)
+  const currentTarget = forcedTarget ?? findNextTarget(keys)
+
+  const jumpTo = useCallback((x: number, y: number, layer: Layer) => {
+    setForcedTarget({ x, y, layer })
+  }, [])
 
   const recordKey = useCallback(
     (code: string) => {
       if (!currentTarget) return
       const { layer, x, y } = currentTarget
 
+      setForcedTarget(null)
       setKeys((prev) => {
         const next = { ...prev, [storeKey(x, y, layer)]: code }
 
@@ -76,6 +82,7 @@ export function useKeyboardStore() {
   )
 
   const undo = useCallback(() => {
+    setForcedTarget(null)
     setKeys((prev) => {
       // Find the last recorded promptable key in scan order
       let lastLayer: Layer | null = null
@@ -118,5 +125,5 @@ export function useKeyboardStore() {
     setKeys({})
   }, [])
 
-  return { keys, currentTarget, recordKey, undo, reset }
+  return { keys, currentTarget, recordKey, jumpTo, undo, reset }
 }

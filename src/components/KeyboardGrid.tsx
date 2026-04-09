@@ -19,10 +19,10 @@ interface Props {
   currentTarget: CurrentTarget | null
   active: boolean
   isActive: boolean
-  onCurrentKeyClick?: () => void
+  onKeyClick?: (x: number, y: number, layer: Layer, shiftKey: boolean) => void
 }
 
-export function KeyboardGrid({ layer, keys, currentTarget, active, isActive, onCurrentKeyClick }: Props) {
+export function KeyboardGrid({ layer, keys, currentTarget, active, isActive, onKeyClick }: Props) {
   const isCurrentLayer = currentTarget?.layer === layer
   const allDone = !currentTarget || currentTarget.layer !== layer
 
@@ -76,7 +76,11 @@ export function KeyboardGrid({ layer, keys, currentTarget, active, isActive, onC
                   className={`${styles.key} ${stateClass}`}
                   aria-label={`${layer} layer key at ${x},${y}${recorded ? `: ${recorded}` : ''}`}
                   data-testid={`key-${layer}-${x}-${y}`}
-                  onClick={isHighlighted ? onCurrentKeyClick : undefined}
+                  onClick={
+                    active && !skipped && !mirror && onKeyClick
+                      ? (e) => onKeyClick(x, y, layer, e.shiftKey)
+                      : undefined
+                  }
                 >
                   {displayText}
                 </div>
