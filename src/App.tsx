@@ -75,6 +75,7 @@ export default function App() {
           layer={layer}
           keys={keys}
           currentTarget={currentTarget}
+          active={active}
           isActive={!currentTarget || currentTarget.layer === layer}
         />
       ))}

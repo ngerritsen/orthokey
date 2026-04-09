@@ -16,6 +16,7 @@ interface Props {
   layer: Layer
   keys: Record<string, string>
   currentTarget: CurrentTarget | null
+  active: boolean
   isActive: boolean
 }
 
@@ -51,12 +52,12 @@ function cellStyle(state: 'highlighted' | 'skipped' | 'mapped' | 'empty'): React
   }
 }
 
-export function KeyboardGrid({ layer, keys, currentTarget, isActive }: Props) {
+export function KeyboardGrid({ layer, keys, currentTarget, active, isActive }: Props) {
   const isCurrentLayer = currentTarget?.layer === layer
   const allDone = !currentTarget || currentTarget.layer !== layer
 
   let statusText = ''
-  if (isActive && isCurrentLayer) {
+  if (active && isCurrentLayer) {
     statusText = 'Mapping in progress…'
   } else if (isActive && allDone) {
     statusText = 'Complete'
