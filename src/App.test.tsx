@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { afterEach, beforeEach, describe, it, expect } from 'vitest'
-import App from './App'
+import { Mapper } from './pages/Mapper'
 import { COLS, ROWS, LAYERS, storeKey, isPromptable, type Layer } from './config/keyboard'
 
 // Build list of all promptable positions in order (layer > row > col)
@@ -45,12 +45,12 @@ afterEach(() => {
 
 describe('initial state', () => {
   it('highlights position (0,0) on the main layer first', () => {
-    render(<App />)
+    render(<Mapper />)
     expect(screen.getByText(/main layer \(0,0\)/i)).toBeInTheDocument()
   })
 
   it('renders all three layer grids', () => {
-    render(<App />)
+    render(<Mapper />)
     expect(screen.getByText('Main layer')).toBeInTheDocument()
     expect(screen.getByText('Lower layer')).toBeInTheDocument()
     expect(screen.getByText('Raised layer')).toBeInTheDocument()
@@ -59,21 +59,21 @@ describe('initial state', () => {
 
 describe('key recording', () => {
   it('records a keypress at the current position and shows the formatted label', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     pressKey('KeyA')
     expect(getCell('main', 0, 0)).toHaveTextContent('A')
   })
 
   it('advances the highlight to the next position after a keypress', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     pressKey('KeyA')
     expect(screen.getByText(/main layer \(1,0\)/i)).toBeInTheDocument()
   })
 
   it('ignores modifier-only keypresses', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     pressKey('ShiftLeft')
     // Still on (0,0)
@@ -83,7 +83,7 @@ describe('key recording', () => {
 
 describe('special positions', () => {
   it('skips the lower layer key (4,3) during mapping', () => {
-    render(<App />)
+    render(<Mapper />)
     // (4,3) should never appear as the prompted position
     const allPositions = allPromptable()
     expect(allPositions.some((p) => p.x === 4 && p.y === 3)).toBe(false)
@@ -95,7 +95,7 @@ describe('special positions', () => {
   })
 
   it('shows pre-labels for layer keys in the grid', () => {
-    render(<App />)
+    render(<Mapper />)
     // There are 3 layers, each with a "Lower" and "Raise" label cell
     const lowerCells = screen.getAllByText('Lower')
     const raiseCells = screen.getAllByText('Raise')
@@ -104,7 +104,7 @@ describe('special positions', () => {
   })
 
   it('auto-fills (6,3) when (5,3) is recorded', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
 
     // Fill all positions before (5,3) in the main layer
@@ -117,8 +117,8 @@ describe('special positions', () => {
     expect(screen.getByText(/main layer \(5,3\)/i)).toBeInTheDocument()
     pressKey('Space')
 
-    expect(getCell('main', 5, 3)).toHaveTextContent('Space')
-    expect(getCell('main', 6, 3)).toHaveTextContent('Space')
+    expect(getCell('main', 5, 3)).toHaveTextContent('Spc')
+    expect(getCell('main', 6, 3)).toHaveTextContent('Spc')
   })
 
   it('does not prompt (6,3) separately', () => {
@@ -144,7 +144,7 @@ describe('layer progression', () => {
     }
     seedLocalStorage(mainKeys)
 
-    render(<App />)
+    render(<Mapper />)
     expect(screen.getByText(/lower layer \(0,0\)/i)).toBeInTheDocument()
   })
 
@@ -164,36 +164,36 @@ describe('layer progression', () => {
     }
     seedLocalStorage(allKeys)
 
-    render(<App />)
+    render(<Mapper />)
     expect(screen.getByText('All layers mapped.')).toBeInTheDocument()
   })
 })
 
 describe('localStorage persistence', () => {
   it('restores recorded keys after a remount (simulating reload)', () => {
-    const { unmount } = render(<App />)
+    const { unmount } = render(<Mapper />)
     clickStart()
     pressKey('KeyQ')
     unmount()
 
-    render(<App />)
+    render(<Mapper />)
     expect(getCell('main', 0, 0)).toHaveTextContent('Q')
   })
 
   it('persists the current position across remounts', () => {
-    const { unmount } = render(<App />)
+    const { unmount } = render(<Mapper />)
     clickStart()
     pressKey('KeyQ') // records (0,0), advances to (1,0)
     unmount()
 
-    render(<App />)
+    render(<Mapper />)
     expect(screen.getByText(/main layer \(1,0\)/i)).toBeInTheDocument()
   })
 })
 
 describe('reset', () => {
   it('clears all recorded keys', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     pressKey('KeyA')
     fireEvent.click(screen.getByRole('button', { name: /reset/i }))
@@ -201,7 +201,7 @@ describe('reset', () => {
   })
 
   it('returns to the first position after reset', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     pressKey('KeyA')
     fireEvent.click(screen.getByRole('button', { name: /reset/i }))
@@ -209,7 +209,7 @@ describe('reset', () => {
   })
 
   it('clears localStorage on reset', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     pressKey('KeyA')
     fireEvent.click(screen.getByRole('button', { name: /reset/i }))
@@ -217,7 +217,7 @@ describe('reset', () => {
   })
 
   it('shows Start button after reset', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     pressKey('KeyA')
     fireEvent.click(screen.getByRole('button', { name: /reset/i }))
@@ -227,30 +227,30 @@ describe('reset', () => {
 
 describe('start/pause/continue', () => {
   it('shows Start button on initial load with no progress', () => {
-    render(<App />)
+    render(<Mapper />)
     expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument()
   })
 
   it('shows Continue button on load when there is saved progress', () => {
     seedLocalStorage({ '0,0,main': 'KeyA' })
-    render(<App />)
+    render(<Mapper />)
     expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
   })
 
   it('does not record keys before clicking Start', () => {
-    render(<App />)
+    render(<Mapper />)
     pressKey('KeyA')
     expect(getCell('main', 0, 0)).toHaveTextContent('')
   })
 
   it('shows Pause button after clicking Start', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     expect(screen.getByRole('button', { name: 'Pause' })).toBeInTheDocument()
   })
 
   it('stops recording after clicking Pause', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     fireEvent.click(screen.getByRole('button', { name: 'Pause' }))
     pressKey('KeyA')
@@ -258,7 +258,7 @@ describe('start/pause/continue', () => {
   })
 
   it('shows Continue button after pausing with progress', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     pressKey('KeyA') // record something so there is progress
     fireEvent.click(screen.getByRole('button', { name: 'Pause' }))
@@ -280,36 +280,36 @@ describe('start/pause/continue', () => {
       }
     }
     seedLocalStorage(allKeys)
-    render(<App />)
+    render(<Mapper />)
     expect(screen.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 })
 
 describe('custom label modal', () => {
-  it('opens modal when clicking the highlighted key', () => {
-    render(<App />)
+  it('opens modal when shift-clicking a key while active', () => {
+    render(<Mapper />)
     clickStart()
-    fireEvent.click(getCell('main', 0, 0))
+    fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     expect(screen.getByText('Enter custom label')).toBeInTheDocument()
   })
 
-  it('does not open modal when clicking a non-highlighted key', () => {
-    render(<App />)
+  it('does not open modal on a plain click', () => {
+    render(<Mapper />)
     clickStart()
     fireEvent.click(getCell('main', 1, 0))
     expect(screen.queryByText('Enter custom label')).not.toBeInTheDocument()
   })
 
   it('does not open modal when not active', () => {
-    render(<App />)
-    fireEvent.click(getCell('main', 0, 0))
+    render(<Mapper />)
+    fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     expect(screen.queryByText('Enter custom label')).not.toBeInTheDocument()
   })
 
   it('records the custom label on submit and closes modal', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
-    fireEvent.click(getCell('main', 0, 0))
+    fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Fn' } })
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
     expect(getCell('main', 0, 0)).toHaveTextContent('Fn')
@@ -317,9 +317,9 @@ describe('custom label modal', () => {
   })
 
   it('records the label on Enter key', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
-    fireEvent.click(getCell('main', 0, 0))
+    fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     const input = screen.getByRole('textbox')
     fireEvent.change(input, { target: { value: 'BrtUp' } })
     fireEvent.keyDown(input, { key: 'Enter' })
@@ -327,9 +327,9 @@ describe('custom label modal', () => {
   })
 
   it('cancels on Escape key without recording', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
-    fireEvent.click(getCell('main', 0, 0))
+    fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     const input = screen.getByRole('textbox')
     fireEvent.change(input, { target: { value: 'Fn' } })
     fireEvent.keyDown(input, { key: 'Escape' })
@@ -338,9 +338,9 @@ describe('custom label modal', () => {
   })
 
   it('cancels on Cancel button without recording', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
-    fireEvent.click(getCell('main', 0, 0))
+    fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Fn' } })
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(screen.queryByText('Enter custom label')).not.toBeInTheDocument()
@@ -348,18 +348,18 @@ describe('custom label modal', () => {
   })
 
   it('records empty string when submitted with no input', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
-    fireEvent.click(getCell('main', 0, 0))
+    fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
     // Empty string is stored — key advances to next position
     expect(screen.getByText(/main layer \(1,0\)/i)).toBeInTheDocument()
   })
 
   it('does not capture key presses while modal is open', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
-    fireEvent.click(getCell('main', 0, 0))
+    fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     pressKey('KeyA')
     // Modal still open, key not recorded
     expect(screen.getByText('Enter custom label')).toBeInTheDocument()
@@ -369,24 +369,24 @@ describe('custom label modal', () => {
 
 describe('key repeat and modifier handling', () => {
   it('ignores key repeat events', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     fireEvent.keyDown(window, { code: 'KeyA', repeat: true })
     expect(getCell('main', 0, 0)).toHaveTextContent('')
     expect(screen.getByText(/main layer \(0,0\)/i)).toBeInTheDocument()
   })
 
-  it('registers a modifier key on keyup', () => {
-    render(<App />)
+  it('registers a modifier key on keyup and shows its short label', () => {
+    render(<Mapper />)
     clickStart()
     fireEvent.keyDown(window, { code: 'AltLeft' })
     expect(getCell('main', 0, 0)).toHaveTextContent('')
     fireEvent.keyUp(window, { code: 'AltLeft' })
-    expect(getCell('main', 0, 0)).toHaveTextContent('AltLeft')
+    expect(getCell('main', 0, 0)).toHaveTextContent('Alt')
   })
 
   it('does not register a modifier when window blurs before keyup (e.g. Alt+Tab)', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     fireEvent.keyDown(window, { code: 'AltLeft' })
     fireEvent(window, new FocusEvent('blur'))
@@ -395,7 +395,7 @@ describe('key repeat and modifier handling', () => {
   })
 
   it('does not register a modifier when a non-modifier key is pressed alongside it', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     fireEvent.keyDown(window, { code: 'ShiftLeft' })
     fireEvent.keyDown(window, { code: 'KeyA' })
@@ -405,10 +405,10 @@ describe('key repeat and modifier handling', () => {
   })
 
   it('registers Shift when pressed and released alone', () => {
-    render(<App />)
+    render(<Mapper />)
     clickStart()
     fireEvent.keyDown(window, { code: 'ShiftLeft' })
     fireEvent.keyUp(window, { code: 'ShiftLeft' })
-    expect(getCell('main', 0, 0)).toHaveTextContent('ShiftLeft')
+    expect(getCell('main', 0, 0)).toHaveTextContent('Shift')
   })
 })
