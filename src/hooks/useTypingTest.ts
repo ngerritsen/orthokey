@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
 export type CharState = 'pending' | 'correct' | 'wrong'
 
@@ -31,6 +31,11 @@ export function useTypingTest(text: string) {
   }, [cursor])
 
   const reset = useCallback(() => {
+    setStates(Array(text.length).fill('pending'))
+    setCursor(0)
+  }, [text])
+
+  useEffect(() => {
     setStates(Array(text.length).fill('pending'))
     setCursor(0)
   }, [text])

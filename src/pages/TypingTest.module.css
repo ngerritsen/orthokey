@@ -12,10 +12,9 @@
 
 .text {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 20px;
-  line-height: 2;
-  letter-spacing: 0.02em;
-  word-break: break-word;
+  font-size: 18px;
+  line-height: 1.9;
+  white-space: pre-wrap;
 }
 
 .char {
@@ -62,20 +61,6 @@
 
 .restartButton {
   margin-top: 24px;
-  padding: 7px 16px;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: inherit;
-  border: none;
-  border-radius: 10px;
-  background: var(--btn-bg);
-  color: var(--btn-color);
-  cursor: pointer;
-  transition: background 0.1s;
-}
-
-.restartButton:hover {
-  background: var(--btn-hover-bg);
 }
 
 .pending {

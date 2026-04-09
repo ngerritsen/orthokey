@@ -18,7 +18,7 @@ export function PageHeader({ title, subtitle, actions }: Props) {
             end
             className={({ isActive }) => `${styles.link} ${isActive ? styles.linkActive : ''}`}
           >
-            Test
+            Type
           </NavLink>
           <NavLink
             to="/mapper"
