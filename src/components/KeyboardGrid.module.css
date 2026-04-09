@@ -1,0 +1,93 @@
+.section {
+  margin-bottom: 36px;
+}
+
+.layerHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.layerTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.statusText {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.statusActive {
+  color: var(--status-active);
+}
+
+.statusComplete {
+  color: var(--status-complete);
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: opacity 0.2s;
+}
+
+.gridInactive {
+  opacity: 0.45;
+}
+
+.row {
+  display: flex;
+  gap: 4px;
+}
+
+.key {
+  width: 52px;
+  height: 52px;
+  border: 2px solid;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  user-select: none;
+  transition: background 0.1s, border-color 0.1s, transform 0.1s, box-shadow 0.1s;
+}
+
+.keyEmpty {
+  background: var(--key-empty-bg);
+  border-color: var(--key-empty-border);
+  color: var(--key-empty-color);
+  box-shadow: 0 3px 0 var(--key-empty-shadow);
+}
+
+.keySkipped {
+  background: var(--key-skipped-bg);
+  border-color: var(--key-skipped-border);
+  color: var(--key-skipped-color);
+  font-size: 10px;
+  box-shadow: 0 3px 0 var(--key-skipped-shadow);
+}
+
+.keyMapped {
+  background: var(--key-mapped-bg);
+  border-color: var(--key-mapped-border);
+  color: var(--key-mapped-color);
+  box-shadow: 0 3px 0 var(--key-mapped-shadow);
+}
+
+.keyHighlighted {
+  background: var(--key-highlighted-bg);
+  border-color: var(--key-highlighted-border);
+  color: var(--key-highlighted-color);
+  box-shadow: 0 3px 0 var(--key-highlighted-shadow);
+  transform: translateY(-1px);
+}

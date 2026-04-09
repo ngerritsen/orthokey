@@ -2,10 +2,98 @@
   box-sizing: border-box;
 }
 
+:root {
+  --bg-primary: #faf9f7;
+  --bg-secondary: #f0ede8;
+  --bg-elevated: #ffffff;
+
+  --text-primary: #1c1917;
+  --text-secondary: #78716c;
+  --text-muted: #a8a29e;
+
+  --border: #e2ddd8;
+  --border-strong: #c9c3bb;
+
+  /* Key states */
+  --key-empty-bg: #f5f2ee;
+  --key-empty-border: #ddd8d2;
+  --key-empty-shadow: #c9c3bb;
+  --key-empty-color: #c4bdb6;
+
+  --key-skipped-bg: #ede9e4;
+  --key-skipped-border: #c9c3bb;
+  --key-skipped-shadow: #b5afa8;
+  --key-skipped-color: #78716c;
+
+  --key-mapped-bg: #f0fdf4;
+  --key-mapped-border: #86efac;
+  --key-mapped-shadow: #4ade80;
+  --key-mapped-color: #15803d;
+
+  --key-highlighted-bg: #d97706;
+  --key-highlighted-border: #b45309;
+  --key-highlighted-shadow: #92400e;
+  --key-highlighted-color: #ffffff;
+
+  /* Status */
+  --status-active: #d97706;
+  --status-complete: #16a34a;
+
+  /* Buttons */
+  --btn-bg: #ffffff;
+  --btn-border: #e2ddd8;
+  --btn-color: #44403c;
+  --btn-hover-bg: #f5f2ee;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1c1917;
+    --bg-secondary: #292524;
+    --bg-elevated: #292524;
+
+    --text-primary: #faf9f7;
+    --text-secondary: #a8a29e;
+    --text-muted: #78716c;
+
+    --border: #3c3733;
+    --border-strong: #57534e;
+
+    --key-empty-bg: #292524;
+    --key-empty-border: #3c3733;
+    --key-empty-shadow: #1c1917;
+    --key-empty-color: #57534e;
+
+    --key-skipped-bg: #2c2a28;
+    --key-skipped-border: #57534e;
+    --key-skipped-shadow: #1c1917;
+    --key-skipped-color: #a8a29e;
+
+    --key-mapped-bg: #14532d;
+    --key-mapped-border: #16a34a;
+    --key-mapped-shadow: #052e16;
+    --key-mapped-color: #86efac;
+
+    --key-highlighted-bg: #d97706;
+    --key-highlighted-border: #b45309;
+    --key-highlighted-shadow: #451a03;
+    --key-highlighted-color: #ffffff;
+
+    --status-active: #fbbf24;
+    --status-complete: #4ade80;
+
+    --btn-bg: #292524;
+    --btn-border: #3c3733;
+    --btn-color: #d6d3d0;
+    --btn-hover-bg: #3c3733;
+  }
+}
+
 body {
   margin: 0;
-  background: #f9fafb;
-  color: #111827;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 #root {

@@ -3,6 +3,7 @@ import { LAYERS } from './config/keyboard'
 import { useKeyboardStore } from './hooks/useKeyboardStore'
 import { useKeyListener } from './hooks/useKeyListener'
 import { KeyboardGrid } from './components/KeyboardGrid'
+import styles from './App.module.css'
 
 export default function App() {
   const { keys, currentTarget, recordKey, reset } = useKeyboardStore()
@@ -19,51 +20,26 @@ export default function App() {
     reset()
   }
 
-  const buttonStyle = {
-    padding: '6px 14px',
-    fontSize: 13,
-    fontWeight: 600,
-    border: '1px solid #e5e7eb',
-    borderRadius: 6,
-    background: '#fff',
-    cursor: 'pointer',
-    color: '#374151',
-  }
-
   return (
-    <div
-      style={{
-        fontFamily: 'system-ui, sans-serif',
-        maxWidth: 900,
-        margin: '0 auto',
-        padding: '24px 16px',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          marginBottom: 28,
-        }}
-      >
+    <div className={styles.container}>
+      <div className={styles.header}>
         <div>
-          <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 800 }}>OrthoKey</h1>
-          <p style={{ margin: 0, fontSize: 13, color: '#6b7280' }}>
+          <h1 className={styles.title}>OrthoKey</h1>
+          <p className={styles.subtitle}>
             {isDone
               ? 'All layers mapped.'
               : `Press the highlighted key — ${currentTarget.layer} layer (${currentTarget.x},${currentTarget.y})`}
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div className={styles.actions}>
           <button
+            className={styles.button}
             onClick={() => setActive((a) => !a)}
             disabled={isDone}
-            style={buttonStyle}
           >
             {startLabel}
           </button>
-          <button onClick={handleReset} style={buttonStyle}>
+          <button className={styles.button} onClick={handleReset}>
             Reset
           </button>
         </div>
