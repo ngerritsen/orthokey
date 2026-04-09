@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import { useTypingTest } from '../hooks/useTypingTest'
 import { TEXTS } from '../config/texts'
+import { PageHeader } from '../components/PageHeader'
 import styles from './TypingTest.module.css'
+import appStyles from '../App.module.css'
 
 const TEXT = TEXTS[0]
 
@@ -29,12 +31,14 @@ export function TypingTest() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>OrthoKey</h1>
-        <button className={styles.restartButton} onClick={reset}>
-          Restart
-        </button>
-      </div>
+      <PageHeader
+        title="OrthoKey"
+        actions={
+          <button className={appStyles.button} onClick={reset}>
+            Restart
+          </button>
+        }
+      />
       <p className={styles.hint}>Tab to restart · Backspace to go back</p>
       <div className={styles.text} aria-label="typing test text">
         {TEXT.split('').map((char, i) => (

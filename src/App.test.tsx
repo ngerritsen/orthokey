@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, it, expect } from 'vitest'
 import { Mapper } from './pages/Mapper'
 import { COLS, ROWS, LAYERS, storeKey, isPromptable, type Layer } from './config/keyboard'
@@ -45,12 +46,12 @@ afterEach(() => {
 
 describe('initial state', () => {
   it('highlights position (0,0) on the main layer first', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     expect(screen.getByText(/main layer \(0,0\)/i)).toBeInTheDocument()
   })
 
   it('renders all three layer grids', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     expect(screen.getByText('Main layer')).toBeInTheDocument()
     expect(screen.getByText('Lower layer')).toBeInTheDocument()
     expect(screen.getByText('Raised layer')).toBeInTheDocument()
@@ -59,21 +60,21 @@ describe('initial state', () => {
 
 describe('key recording', () => {
   it('records a keypress at the current position and shows the formatted label', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     pressKey('KeyA')
     expect(getCell('main', 0, 0)).toHaveTextContent('A')
   })
 
   it('advances the highlight to the next position after a keypress', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     pressKey('KeyA')
     expect(screen.getByText(/main layer \(1,0\)/i)).toBeInTheDocument()
   })
 
   it('ignores modifier-only keypresses', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     pressKey('ShiftLeft')
     // Still on (0,0)
@@ -83,7 +84,7 @@ describe('key recording', () => {
 
 describe('special positions', () => {
   it('skips the lower layer key (4,3) during mapping', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     // (4,3) should never appear as the prompted position
     const allPositions = allPromptable()
     expect(allPositions.some((p) => p.x === 4 && p.y === 3)).toBe(false)
@@ -95,7 +96,7 @@ describe('special positions', () => {
   })
 
   it('shows pre-labels for layer keys in the grid', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     // There are 3 layers, each with a "Lower" and "Raise" label cell
     const lowerCells = screen.getAllByText('Lower')
     const raiseCells = screen.getAllByText('Raise')
@@ -104,7 +105,7 @@ describe('special positions', () => {
   })
 
   it('auto-fills (6,3) when (5,3) is recorded', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
 
     // Fill all positions before (5,3) in the main layer
@@ -144,7 +145,7 @@ describe('layer progression', () => {
     }
     seedLocalStorage(mainKeys)
 
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     expect(screen.getByText(/lower layer \(0,0\)/i)).toBeInTheDocument()
   })
 
@@ -164,36 +165,36 @@ describe('layer progression', () => {
     }
     seedLocalStorage(allKeys)
 
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     expect(screen.getByText('All layers mapped.')).toBeInTheDocument()
   })
 })
 
 describe('localStorage persistence', () => {
   it('restores recorded keys after a remount (simulating reload)', () => {
-    const { unmount } = render(<Mapper />)
+    const { unmount } = render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     pressKey('KeyQ')
     unmount()
 
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     expect(getCell('main', 0, 0)).toHaveTextContent('Q')
   })
 
   it('persists the current position across remounts', () => {
-    const { unmount } = render(<Mapper />)
+    const { unmount } = render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     pressKey('KeyQ') // records (0,0), advances to (1,0)
     unmount()
 
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     expect(screen.getByText(/main layer \(1,0\)/i)).toBeInTheDocument()
   })
 })
 
 describe('reset', () => {
   it('clears all recorded keys', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     pressKey('KeyA')
     fireEvent.click(screen.getByRole('button', { name: /reset/i }))
@@ -201,7 +202,7 @@ describe('reset', () => {
   })
 
   it('returns to the first position after reset', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     pressKey('KeyA')
     fireEvent.click(screen.getByRole('button', { name: /reset/i }))
@@ -209,7 +210,7 @@ describe('reset', () => {
   })
 
   it('clears localStorage on reset', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     pressKey('KeyA')
     fireEvent.click(screen.getByRole('button', { name: /reset/i }))
@@ -217,7 +218,7 @@ describe('reset', () => {
   })
 
   it('shows Start button after reset', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     pressKey('KeyA')
     fireEvent.click(screen.getByRole('button', { name: /reset/i }))
@@ -227,30 +228,30 @@ describe('reset', () => {
 
 describe('start/pause/continue', () => {
   it('shows Start button on initial load with no progress', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument()
   })
 
   it('shows Continue button on load when there is saved progress', () => {
     seedLocalStorage({ '0,0,main': 'KeyA' })
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
   })
 
   it('does not record keys before clicking Start', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     pressKey('KeyA')
     expect(getCell('main', 0, 0)).toHaveTextContent('')
   })
 
   it('shows Pause button after clicking Start', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     expect(screen.getByRole('button', { name: 'Pause' })).toBeInTheDocument()
   })
 
   it('stops recording after clicking Pause', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.click(screen.getByRole('button', { name: 'Pause' }))
     pressKey('KeyA')
@@ -258,7 +259,7 @@ describe('start/pause/continue', () => {
   })
 
   it('shows Continue button after pausing with progress', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     pressKey('KeyA') // record something so there is progress
     fireEvent.click(screen.getByRole('button', { name: 'Pause' }))
@@ -280,34 +281,34 @@ describe('start/pause/continue', () => {
       }
     }
     seedLocalStorage(allKeys)
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     expect(screen.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 })
 
 describe('custom label modal', () => {
   it('opens modal when shift-clicking a key while active', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     expect(screen.getByText('Enter custom label')).toBeInTheDocument()
   })
 
   it('does not open modal on a plain click', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.click(getCell('main', 1, 0))
     expect(screen.queryByText('Enter custom label')).not.toBeInTheDocument()
   })
 
   it('does not open modal when not active', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     expect(screen.queryByText('Enter custom label')).not.toBeInTheDocument()
   })
 
   it('records the custom label on submit and closes modal', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Fn' } })
@@ -317,7 +318,7 @@ describe('custom label modal', () => {
   })
 
   it('records the label on Enter key', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     const input = screen.getByRole('textbox')
@@ -327,7 +328,7 @@ describe('custom label modal', () => {
   })
 
   it('cancels on Escape key without recording', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     const input = screen.getByRole('textbox')
@@ -338,7 +339,7 @@ describe('custom label modal', () => {
   })
 
   it('cancels on Cancel button without recording', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Fn' } })
@@ -348,7 +349,7 @@ describe('custom label modal', () => {
   })
 
   it('records empty string when submitted with no input', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
@@ -357,7 +358,7 @@ describe('custom label modal', () => {
   })
 
   it('does not capture key presses while modal is open', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.click(getCell('main', 0, 0), { shiftKey: true })
     pressKey('KeyA')
@@ -369,7 +370,7 @@ describe('custom label modal', () => {
 
 describe('key repeat and modifier handling', () => {
   it('ignores key repeat events', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.keyDown(window, { code: 'KeyA', repeat: true })
     expect(getCell('main', 0, 0)).toHaveTextContent('')
@@ -377,7 +378,7 @@ describe('key repeat and modifier handling', () => {
   })
 
   it('registers a modifier key on keyup and shows its short label', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.keyDown(window, { code: 'AltLeft' })
     expect(getCell('main', 0, 0)).toHaveTextContent('')
@@ -386,7 +387,7 @@ describe('key repeat and modifier handling', () => {
   })
 
   it('does not register a modifier when window blurs before keyup (e.g. Alt+Tab)', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.keyDown(window, { code: 'AltLeft' })
     fireEvent(window, new FocusEvent('blur'))
@@ -395,7 +396,7 @@ describe('key repeat and modifier handling', () => {
   })
 
   it('does not register a modifier when a non-modifier key is pressed alongside it', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.keyDown(window, { code: 'ShiftLeft' })
     fireEvent.keyDown(window, { code: 'KeyA' })
@@ -405,7 +406,7 @@ describe('key repeat and modifier handling', () => {
   })
 
   it('registers Shift when pressed and released alone', () => {
-    render(<Mapper />)
+    render(<MemoryRouter><Mapper /></MemoryRouter>)
     clickStart()
     fireEvent.keyDown(window, { code: 'ShiftLeft' })
     fireEvent.keyUp(window, { code: 'ShiftLeft' })

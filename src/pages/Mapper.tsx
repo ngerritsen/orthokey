@@ -4,6 +4,7 @@ import { useKeyboardStore } from '../hooks/useKeyboardStore'
 import { useKeyListener } from '../hooks/useKeyListener'
 import { KeyboardGrid } from '../components/KeyboardGrid'
 import { CustomLabelModal } from '../components/CustomLabelModal'
+import { PageHeader } from '../components/PageHeader'
 import styles from '../App.module.css'
 
 export function Mapper() {
@@ -36,33 +37,33 @@ export function Mapper() {
     reset()
   }
 
+  const subtitle = isDone
+    ? 'All layers mapped.'
+    : `Press the highlighted key — ${currentTarget.layer} layer (${currentTarget.x},${currentTarget.y})`
+
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>OrthoKey</h1>
-          <p className={styles.subtitle}>
-            {isDone
-              ? 'All layers mapped.'
-              : `Press the highlighted key — ${currentTarget.layer} layer (${currentTarget.x},${currentTarget.y})`}
-          </p>
-        </div>
-        <div className={styles.actions}>
-          <button
-            className={`${styles.button} ${active ? styles.buttonPause : styles.buttonStart}`}
-            onClick={() => setActive((a) => !a)}
-            disabled={isDone}
-          >
-            {startLabel}
-          </button>
-          <button className={styles.button} onClick={undo} disabled={!canUndo}>
-            Back
-          </button>
-          <button className={`${styles.button} ${styles.buttonReset}`} onClick={handleReset}>
-            Reset
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="OrthoKey"
+        subtitle={subtitle}
+        actions={
+          <>
+            <button
+              className={`${styles.button} ${active ? styles.buttonPause : styles.buttonStart}`}
+              onClick={() => setActive((a) => !a)}
+              disabled={isDone}
+            >
+              {startLabel}
+            </button>
+            <button className={styles.button} onClick={undo} disabled={!canUndo}>
+              Back
+            </button>
+            <button className={`${styles.button} ${styles.buttonReset}`} onClick={handleReset}>
+              Reset
+            </button>
+          </>
+        }
+      />
 
       {LAYERS.map((layer) => (
         <KeyboardGrid
